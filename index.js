@@ -5,12 +5,12 @@ var seq = [];
 var pstep = 0;
 var level = 1;
 
+
 function nextSeq(){
         num = Math.floor((Math.random()*4));
         seq.push(num);
-        $(document).off("keydown");
+        $(document).off(page);
         $("#level-title").text("Level "+level);
-        console.log(seq);
         playSeq();
 }
 
@@ -34,7 +34,7 @@ function rightAnswer() {
     if((pstep+1)==seq.length){
         level +=1;
         pstep = 0;
-        $(".btn").off("click");
+        $(".btn").off(buttons);
         nextSeq();
     }
     else {
@@ -47,7 +47,7 @@ function gameOver() {
     audio.play();
     $("#level-title").text("Game Over!!!");
     $("body").addClass("game-over", 100);
-    $(".btn").off("click");
+    $(".btn").off(buttons);
     startResetListener();
 }
 
@@ -56,14 +56,14 @@ function resetGame(){
     level = 1;
     seq = [];
     $("body").removeClass("game-over",400);
-    $("#level-title").text("Press A button to start!!!");
-    $(document).off("keydown");
-    $(".btn").off("click");
+    $("#level-title").text(headertext + " to start!!!");
+    $(document).off(page);
+    $(".btn").off(buttons);
     startKeyListener();
 }
 
 function startMouseListener(){
-    $(".btn").on("click",function(event) {
+    $(".btn").on(buttons,function(event) {
     $("#"+event.target.id).addClass("pressed", 100);
     $("#"+event.target.id).removeClass("pressed", 100);
     if (event.target.id != keys[seq[pstep]]) {
@@ -78,13 +78,13 @@ function startMouseListener(){
 }
 
 function startResetListener(){
-    $(document).on("keydown",function(event){
+    $(document).on(page,function(event){
         resetGame();
     })
 }
 
 function startKeyListener(){
-    $(document).on("keydown",function(event){
+    $(document).on(page,function(event){
         if (event.key == "a") {
             nextSeq();
         } 
@@ -92,5 +92,17 @@ function startKeyListener(){
 }
 
 $(document).ready(function(){
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        var page = "tap";
+        var buttons = "tap";
+        var headertext = "Tap";
+        $("#level-title").text(headertext + " to start!!!");
+    }
+    else {
+        var buttons = "click";
+        var page = "keydown";
+        var headertext = "Press A key";
+        $("#level-title").text(headertext + " to start!!!");
+    }
     startKeyListener();
 })
