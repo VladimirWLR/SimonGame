@@ -73,8 +73,6 @@ function startMouseListener(){
             gameOver();
     }
     else {
-            console.log("keys[seq[pstep]]: "+keys[seq[pstep]]);
-            console.log("event.target.id: "+event.target.id);
             rightAnswer();
         }
     })
