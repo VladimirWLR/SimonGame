@@ -27,9 +27,9 @@ function playSeq() {
         i+=1;
         if(i === seq.length || seq == []){
             clearInterval(intervalId);
+            startMouseListener();
         }
     }, 800);
-    startMouseListener();
 }
 
 function rightAnswer() {
@@ -86,10 +86,14 @@ function startResetListener(){
 }
 
 function startKeyListener(){
-    $(document).on(keyl,function(event){
-        if (event.key == "a") {
+    $("body").on(keyl,function(event){
+        if (event.key == "a" && keyl == "keydown.start") {
             nextSeq();
         } 
+        else if (keyl=="tap.start"){
+            console.log("tap");
+            nextSeq();
+        }
     })
 }
 
