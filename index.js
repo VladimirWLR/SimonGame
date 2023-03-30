@@ -4,15 +4,16 @@ var keys = ["green","red","yellow","blue"];
 var seq = [];
 var pstep = 0;
 var level = 1;
-var buttons = "click";
-var page = "keydown";
+var buttons = "click.game";
+var keyl = "keydown.start";
+var keyr = "keydown.reset";
 var headertext = "Press A key";
-
+var audio = null;
 
 function nextSeq(){
         num = Math.floor((Math.random()*4));
         seq.push(num);
-        $(document).off(page);
+        $(document).off(keyl);
         $("#level-title").text("Level "+level);
         playSeq();
 }
@@ -21,10 +22,10 @@ function playSeq() {
     var i = 0;
     const intervalId = setInterval(() => {
         $("#"+keys[seq[i]]).fadeIn(100).fadeOut(100).fadeIn(100); 
-        var audio = new Audio("sounds/"+keys[seq[i]]+'.mp3');
+        audio = new Audio("sounds/"+keys[seq[i]]+'.mp3');
         audio.play();
         i+=1;
-        if(i === seq.length){
+        if(i === seq.length || seq == []){
             clearInterval(intervalId);
         }
     }, 800);
@@ -60,7 +61,7 @@ function resetGame(){
     seq = [];
     $("body").removeClass("game-over",400);
     $("#level-title").text(headertext + " to start!!!");
-    $(document).off(page);
+    $("body").off(keyr);
     $(".btn").off(buttons);
     startKeyListener();
 }
@@ -79,23 +80,24 @@ function startMouseListener(){
 }
 
 function startResetListener(){
-    $(document).on(page,function(event){
+    $("body").on(keyr,function(event){
         resetGame();
     })
 }
 
 function startKeyListener(){
-    $(document).on(page,function(event){
+    $(document).on(keyl,function(event){
         if (event.key == "a") {
             nextSeq();
         } 
     })
 }
 
-$(document).ready(function(){
+$(function(){
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-        page = "tap";
-        buttons = "tap";
+        var buttons = "tap.game";
+        var keyl = "tap.start";
+        var keyr = "tap.reset";
         headertext = "Tap";
         $("#level-title").text(headertext + " to start!!!");
     }
