@@ -1,6 +1,9 @@
 body {
+  cursor: pointer;
   text-align: center;
   background-color: #011F3F;
+  font-family: 'Press Start 2P', cursive;
+  color: #FEF2BF;
 }
 
 #level-title {
@@ -17,12 +20,24 @@ body {
 
 }
 
+div {
+  cursor: pointer;
+}
+
 .btn {
-  margin: 25px;
+  margin: 5%;
   display: inline-block;
   height: 200px;
   width: 200px;
   border: 10px solid black;
+  border-radius: 20%;
+}
+
+.btn-start {
+  background-color: rgb(73, 135, 108);
+  padding: 5%;
+  display: inline-block;
+  border: 2px solid black;
   border-radius: 20%;
 }
 

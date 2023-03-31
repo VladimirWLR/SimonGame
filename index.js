@@ -4,16 +4,19 @@ var keys = ["green","red","yellow","blue"];
 var seq = [];
 var pstep = 0;
 var level = 1;
-var buttons = "click.game";
-var keyl = "keydown.start";
-var keyr = "keydown.reset";
+var ismobile = false;
 var headertext = "Press A key";
 var audio = null;
 
 function nextSeq(){
         num = Math.floor((Math.random()*4));
         seq.push(num);
-        $(document).off(keyl);
+        if(ismobile){
+            $(".btn-start").off("click.start");
+        }
+        else{
+            $("body").off("keydown.start");
+        }
         $("#level-title").text("Level "+level);
         playSeq();
 }
@@ -38,7 +41,7 @@ function rightAnswer() {
     if((pstep+1)==seq.length){
         level +=1;
         pstep = 0;
-        $(".btn").off(buttons);
+        $(".btn").off("click.game");
         nextSeq();
     }
     else {
@@ -51,7 +54,8 @@ function gameOver() {
     audio.play();
     $("#level-title").text("Game Over!!!");
     $("body").addClass("game-over", 100);
-    $(".btn").off(buttons);
+    $(".btn").off("click.game");
+    $("#start").text("Reset!");
     startResetListener();
 }
 
@@ -61,13 +65,19 @@ function resetGame(){
     seq = [];
     $("body").removeClass("game-over",400);
     $("#level-title").text(headertext + " to start!!!");
-    $("body").off(keyr);
-    $(".btn").off(buttons);
+    if(ismobile){
+        $(".btn-start").off("click.reset");
+        $("#start").text("Start!");
+    }
+    else{
+        $("body").off("keydown.reset");
+    }
+    $(".btn").off("click.game");
     startKeyListener();
 }
 
 function startMouseListener(){
-    $(".btn").on(buttons,function(event) {
+    $(".btn").on("click.game",function(event) {
     $("#"+event.target.id).addClass("pressed", 100);
     $("#"+event.target.id).removeClass("pressed", 100);
     if (event.target.id != keys[seq[pstep]]) {
@@ -80,33 +90,40 @@ function startMouseListener(){
 }
 
 function startResetListener(){
-    $("body").on(keyr,function(event){
-        resetGame();
-    })
+    if (!ismobile) {
+        $("body").on("keydown.reset",function(event){
+            resetGame();
+        })   
+    }
+    else {
+        $(".btn-start").on("click.reset",function(event){
+            resetGame();
+        })
+    }
 }
 
 function startKeyListener(){
-    $("body").on(keyl,function(event){
-        if (event.key == "a" && keyl == "keydown.start") {
+    if (ismobile) {
+        $(".btn-start").on("click.start", function(){
             nextSeq();
-        } 
-        else if (keyl=="tap.start"){
-            console.log("tap");
-            nextSeq();
-        }
-    })
+        })
+    }
+    else{
+        $("body").on("keydown.start",function(event){
+            if (event.key == "a") {
+                nextSeq();
+            }
+        })   
+    }
 }
 
 $(function(){
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-        var buttons = "tap.game";
-        var keyl = "tap.start";
-        var keyr = "tap.reset";
-        headertext = "Tap";
+        ismobile = true;
         $("#level-title").text(headertext + " to start!!!");
     }
-    else {
-        $("#level-title").text(headertext + " to start!!!");
+    else{
+        $(".btn-start").hide();
     }
     startKeyListener();
 })
